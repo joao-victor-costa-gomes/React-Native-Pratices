@@ -2,9 +2,9 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import React, { useState } from "react";
 
-import { Button01, Button02 } from './button';
+import Button from './button';
 
-//Icons 
+//Menu icons 
 import { FontAwesome } from '@expo/vector-icons';
 import { Foundation } from '@expo/vector-icons'; 
 
@@ -16,8 +16,9 @@ export default function Menu() {
     <View style={styles.menu_style}>
 
     {/*PLAY button and PAUSE button*/}
-    <TouchableOpacity onPress={()=>{ play ? setPlay(false) : setPlay(true)  }} >
+    <TouchableOpacity onPress={()=>{ play ? setPlay(false) : setPlay(true) }} >
           {play ? 
+            
             <FontAwesome name="play" size={40} color="white" />
             :
             <FontAwesome name="pause" size={40} color="white" />

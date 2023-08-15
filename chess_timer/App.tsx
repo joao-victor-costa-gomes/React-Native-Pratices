@@ -3,18 +3,29 @@ import { StyleSheet, Text, View } from 'react-native';
 import React, { useState } from "react";
 
 import Menu from './src/components/menu';
-import { Button01, Button02 } from './src/components/button';
+import Button from './src/components/button';
 
 export default function App() {
+
+
+
   return (
     <View style={styles.main}>
     <StatusBar style="light" />
 
-      <Button01></Button01>
+      <Button
+      initialSeconds={10}
+      backgroundColor={"darkturquoise"}
+      rotated={true}
+      />
 
       <Menu></Menu>
 
-      <Button02></Button02>
+      <Button
+      initialSeconds={10}
+      backgroundColor={"tomato"}
+      rotated={false}
+      />
 
     </View>
   );
