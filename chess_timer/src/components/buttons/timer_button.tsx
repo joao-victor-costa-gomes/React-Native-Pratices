@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-const Button = ({ initialSeconds, backgroundColor, rotated }) => {
+const Button = ({ 
+    initialSeconds, 
+    backgroundColor, 
+    rotated, 
+    isRunning, 
+    isReseted, 
+}) => {
 
     const [seconds, setSeconds] = useState(initialSeconds);
     const [background_color, setBackgroundColor] = useState("gray");
-    const [running, setRunning] = useState(false);
+    const [running, setRunning] = useState(isRunning);
+    const [reseted, setReseted] = useState(isReseted);
 
-
+    // Function to update timer 
     useEffect(() => {
         let intervalId;
         if (running && seconds > 0) {
@@ -17,35 +24,42 @@ const Button = ({ initialSeconds, backgroundColor, rotated }) => {
         } else if (seconds === 0) {
             setRunning(false);
             setBackgroundColor("gray")
-            setSeconds(initialSeconds);
-            
         }
-
         return () => {
             clearInterval(intervalId);
         };
-    },);
+    },[running, seconds, reseted]); // Constantly update?
 
     const startTimer = () => {
+
+        if (reseted) {
+            resetTimer()
+        } 
+
         if (running) {
-            resetTimer();
-            setBackgroundColor("gray")
+            stopTimer()
+            
         } else {
             setBackgroundColor(backgroundColor)
             setRunning(true);
         }
     };
 
+    // Stop timer incremetation 
     const stopTimer = () => {
+        setBackgroundColor("gray")
         setRunning(false);
     };
 
+    // Reset timer to the inital seconds 
     const resetTimer = () => {
         setBackgroundColor("gray");
         setSeconds(initialSeconds);
         setRunning(false);
+        setReseted(false)
     };
 
+    // Format timer to 00:00 
     const formatTimer = (timeInSeconds) => {
         const minutes = Math.floor(timeInSeconds / 60);
         const seconds = timeInSeconds % 60;
