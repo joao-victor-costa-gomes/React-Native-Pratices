@@ -36,8 +36,11 @@ export default function App() {
       />
 
       <View style={styles.menu_style}>
+
         <Pause_Play/>
+
         <Reset OnReset={Reseting}/>
+        
       </View>
 
       <Button

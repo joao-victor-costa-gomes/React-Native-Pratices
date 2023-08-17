@@ -16,33 +16,41 @@ const Button = ({
 
     // Function to update timer 
     useEffect(() => {
-        let intervalId;
-        if (running && seconds > 0) {
-            intervalId = setInterval(() => {
-                setSeconds(prevSeconds => prevSeconds - 1);
-            }, 1000);
-        } else if (seconds === 0) {
-            setRunning(false);
-            setBackgroundColor("gray")
-        }
-        return () => {
-            clearInterval(intervalId);
-        };
-    },[running, seconds, reseted]); // Constantly update?
+        // O SEGREDO ESTÁ NO ISRESETED
+
+        //if(isReseted) {
+            //resetTimer()
+            
+        //} else {    
+            let intervalId;
+    
+            if (running && seconds > 0) {
+                intervalId = setInterval(() => {
+                    setSeconds(prevSeconds => prevSeconds - 1);
+                }, 1000);
+            } else if (seconds === 0) {
+                setRunning(false);
+                setBackgroundColor("gray");
+                setSeconds(initialSeconds);
+            }
+    
+            return () => {
+                clearInterval(intervalId);
+            };
+        //}
+        
+    }, [running, seconds, reseted]);
+    
 
     const startTimer = () => {
-
-        if (reseted) {
-            resetTimer()
-        } 
-
-        if (running) {
-            stopTimer()
-            
-        } else {
-            setBackgroundColor(backgroundColor)
-            setRunning(true);
-        }
+            if (running) {
+                stopTimer()
+                
+            } else {
+                setBackgroundColor(backgroundColor)
+                setRunning(true);
+            }     
+   
     };
 
     // Stop timer incremetation 
@@ -53,10 +61,10 @@ const Button = ({
 
     // Reset timer to the inital seconds 
     const resetTimer = () => {
-        setBackgroundColor("gray");
-        setSeconds(initialSeconds);
-        setRunning(false);
-        setReseted(false)
+            setBackgroundColor("gray");
+            setSeconds(initialSeconds);
+            setRunning(false);
+            setReseted(false)
     };
 
     // Format timer to 00:00 
