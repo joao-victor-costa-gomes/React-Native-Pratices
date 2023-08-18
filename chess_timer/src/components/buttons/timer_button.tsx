@@ -14,14 +14,19 @@ const Button = ({
     const [running, setRunning] = useState(isRunning);
     const [reseted, setReseted] = useState(isReseted);
 
+    useEffect(()=>{
+        setRunning(isRunning)
+    }, [isRunning])
+  
     // Function to update timer 
     useEffect(() => {
-        // O SEGREDO ESTÁ NO ISRESETED
 
         //if(isReseted) {
             //resetTimer()
+            //setReseted(false);
             
         //} else {    
+
             let intervalId;
     
             if (running && seconds > 0) {
@@ -39,17 +44,18 @@ const Button = ({
             };
         //}
         
-    }, [running, seconds, reseted]);
+    }, [running, seconds]);
     
-
+    // Start the timer iteration 
     const startTimer = () => {
-            if (running) {
-                stopTimer()
+ 
+            //if (running) {
+                //stopTimer()
                 
-            } else {
+            //} else {
                 setBackgroundColor(backgroundColor)
                 setRunning(true);
-            }     
+            //}    
    
     };
 

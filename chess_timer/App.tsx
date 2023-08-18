@@ -15,12 +15,13 @@ export default function App() {
     setReseted(true)
   }
 
-  const Starting = () => {
-    setRunning(true)
-  }
-
   const Pausing = () => {
-    setRunning(false)
+    if (running){
+      setRunning(false)
+    } else {
+      setRunning(true)
+    }
+    
   }
 
   return (
@@ -37,7 +38,7 @@ export default function App() {
 
       <View style={styles.menu_style}>
 
-        <Pause_Play/>
+        <Pause_Play OnPause={Pausing}/>
 
         <Reset OnReset={Reseting}/>
         
