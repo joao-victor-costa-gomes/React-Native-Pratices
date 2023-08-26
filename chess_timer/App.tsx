@@ -1,11 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import React, { useState, useEffect } from "react";
+//import Sound from 'react-native-sound';
 
 import { FontAwesome } from '@expo/vector-icons';
 import { Foundation } from '@expo/vector-icons'; 
 
 export default function App() {
+
+  //const sound = new Sound('touch.mp3', Sound.MAIN_BUNDLE)
 
   const [seconds1, setSeconds1] = useState(300);
   const [running1, setRunning1] = useState(false);
@@ -18,6 +21,9 @@ export default function App() {
 
   const [clicked1, setClicked1] = useState(false);
   const [clicked2, setClicked2] = useState(false);
+
+  const [moves1, setMoves1] = useState(0);
+  const [moves2, setMoves2] = useState(0);
 
   const[play, setPlay] = useState(true)
 
@@ -188,26 +194,45 @@ useEffect(() => {
       backgroundColor: background_color2,
     },
   
-  text_style: {
-      fontSize: 70,
+    text_style: {
+        fontSize: 70,
+        color: "white",
+        fontWeight: "bold",
+    },
+  
+    heads_down: {
+        fontSize: 70,
+        color: "white",
+        fontWeight: "bold",
+        transform: [{ rotate: '180deg' }],
+    },
+
+    undertext: {
+      fontSize: 22,
       color: "white",
       fontWeight: "bold",
-  },
-  
-  heads_down: {
-      fontSize: 70,
+    },
+
+    undertext_hd: {
+      fontSize: 22,
       color: "white",
       fontWeight: "bold",
       transform: [{ rotate: '180deg' }],
-  },
-  
+    },
+
+    undertext_box: {
+      backgroundColor: "gray", 
+    },
+
   });
   
   return (
 
     //MAIN VIEW
     <View style={styles.main}>
-      <StatusBar style="light" />
+    <StatusBar style="light" />
+
+      
 
       {/*timer button 01*/}
       <TouchableOpacity 
@@ -218,8 +243,10 @@ useEffect(() => {
         }
       }}
       >
+        <Text style={styles.undertext_hd}>Moves: {moves1}</Text>
         <Text style={styles.heads_down}>{format_timer(seconds1)}</Text>
       </TouchableOpacity>
+
 
       {/*MENU VIEW*/}
       <View style={styles.menu_style}> 
@@ -254,6 +281,7 @@ useEffect(() => {
       }}
       >
         <Text style={styles.text_style}>{format_timer(seconds2)}</Text>
+        <Text style={styles.undertext}>Moves: {moves2}</Text>
       </TouchableOpacity>
       
     </View>
