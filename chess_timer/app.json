@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "AGORA_VAI",
-    "slug": "AGORA_VAI",
+    "name": "chess_timer",
+    "slug": "chess_timer",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

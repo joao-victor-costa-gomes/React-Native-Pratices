@@ -1,19 +1,19 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import React, { useState, useEffect } from "react";
-//import Sound from 'react-native-sound';
+import { Audio } from 'expo-av';
 
 import { FontAwesome } from '@expo/vector-icons';
 import { Foundation } from '@expo/vector-icons'; 
 
 export default function App() {
 
-  //const sound = new Sound('touch.mp3', Sound.MAIN_BUNDLE)
+  const time = 300; 
 
-  const [seconds1, setSeconds1] = useState(300);
+  const [seconds1, setSeconds1] = useState(time);
   const [running1, setRunning1] = useState(false);
 
-  const [seconds2, setSeconds2] = useState(300);
+  const [seconds2, setSeconds2] = useState(time);
   const [running2, setRunning2] = useState(false);
 
   const [background_color1, setBackgroundColor1] = useState("gray");
@@ -22,10 +22,35 @@ export default function App() {
   const [clicked1, setClicked1] = useState(false);
   const [clicked2, setClicked2] = useState(false);
 
+  const [paused1, setPaused1] = useState(false);
+  const [paused2, setPaused2] = useState(false);
+
   const [moves1, setMoves1] = useState(0);
   const [moves2, setMoves2] = useState(0);
 
   const[play, setPlay] = useState(true)
+
+  // Function to play sound 
+  const playSound = async () => {
+    const soundObject = new Audio.Sound();
+    try {
+      await soundObject.loadAsync(require('./assets/touch.mp3'));
+      await soundObject.playAsync();
+    } catch (error) {
+      console.error('Erro ao carregar o áudio:', error);
+    }
+  };
+  
+  // Increment 1 every time someone do a move 
+  const add_move = (state, setState) => {
+    setState(state + 1);
+  };
+
+  // Clear the moves 
+  const clear_moves = () => {
+    setMoves1(0)
+    setMoves2(0)
+  }
 
   // Start timer iteration [1] 
   const start_timer1 = () => {
@@ -37,11 +62,12 @@ export default function App() {
         setClicked1(false)
 
       } else {
+        playSound()
         setBackgroundColor1("darkturquoise")
         setRunning1(true)
         setClicked1(true)
+        add_move(moves1, setMoves1)
       }
-
   }
 
   // Stop timer iteration [1] 
@@ -62,7 +88,7 @@ export default function App() {
         } else if (seconds1 === 0) {
             setRunning1(false);
             setBackgroundColor1("gray");
-            setSeconds1(300);
+            //setSeconds1(300);
         }
         return () => {
             clearInterval(intervalId);
@@ -80,9 +106,11 @@ const start_timer2 = () => {
       setClicked2(false)
 
     } else {
+      playSound()
       setBackgroundColor2("tomato")
       setRunning2(true)
       setClicked2(true)
+      add_move(moves2, setMoves2)
     }
 }
 
@@ -104,7 +132,7 @@ useEffect(() => {
       } else if (seconds2 === 0) {
           setRunning2(false);
           setBackgroundColor2("gray");
-          setSeconds2(300);
+          //setSeconds2(300);
       }
       return () => {
           clearInterval(intervalId);
@@ -116,15 +144,19 @@ useEffect(() => {
   const pause_play = () => {
     if (running1 || running2) {
       setRunning1(false);
+      setPaused1(true)
       setRunning2(false);
+      setPaused2(true)
       setPlay(false);
     } else {
       if (!running1 && !running2) {
         if (clicked1) {
           setRunning1(true);
+          setPaused1(false)
           setPlay(true);
         } else if (clicked2) {
           setRunning2(true);
+          setPaused2(false)
           setPlay(true);
         }
       }
@@ -135,14 +167,19 @@ useEffect(() => {
   const reset_timer = () => {
 
     setBackgroundColor1("gray");
-    setSeconds1(300);
+    setSeconds1(time);
     setRunning1(false);
     setClicked1(false)
 
     setBackgroundColor2("gray");
-    setSeconds2(300);
+    setSeconds2(time);
     setRunning2(false);
     setClicked2(false)
+
+    setPaused1(false)
+    setPaused2(false)
+
+    clear_moves()
 
     setPlay(true)
 
@@ -177,7 +214,7 @@ useEffect(() => {
     button_style1: {
       flex: 1,
       width: "100%",
-      flexDirection: "row",
+      //flexDirection: "row",
       justifyContent: "space-around",
       alignItems: 'center',
       padding: 10,
@@ -187,7 +224,7 @@ useEffect(() => {
     button_style2: {
       flex: 1,
       width: "100%",
-      flexDirection: "row",
+      //flexDirection: "row",
       justifyContent: "space-around",
       alignItems: 'center',
       padding: 10,
@@ -195,13 +232,13 @@ useEffect(() => {
     },
   
     text_style: {
-        fontSize: 70,
+        fontSize: 80,
         color: "white",
         fontWeight: "bold",
     },
   
     heads_down: {
-        fontSize: 70,
+        fontSize: 80,
         color: "white",
         fontWeight: "bold",
         transform: [{ rotate: '180deg' }],
@@ -238,7 +275,7 @@ useEffect(() => {
       <TouchableOpacity 
       style={styles.button_style1} 
       onPress={() => {
-        if (!running2) { // Verify if button02 is not in execution
+        if (!running2 && !paused1) { // Verify if button02 is not in execution
           start_timer1();
         }
       }}
@@ -275,7 +312,7 @@ useEffect(() => {
       <TouchableOpacity 
       style={styles.button_style2} 
       onPress={() => {
-        if (!running1) { // Verify if button01 is not in execution
+        if (!running1 && !paused2) { // Verify if button01 is not in execution
           start_timer2();
         }
       }}
