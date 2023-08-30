@@ -140,12 +140,12 @@ useEffect(() => {
   
 }, [running2, seconds2]); // Every time this changes
 
-  // Change play/pause button icon  
+  // Change play/pause button icon and pause the 2 timers  
   const pause_play = () => {
     if (running1 || running2) {
       setRunning1(false);
-      setPaused1(true)
       setRunning2(false);
+      setPaused1(true)
       setPaused2(true)
       setPlay(false);
     } else {
@@ -256,11 +256,6 @@ useEffect(() => {
       fontWeight: "bold",
       transform: [{ rotate: '180deg' }],
     },
-
-    undertext_box: {
-      backgroundColor: "gray", 
-    },
-
   });
   
   return (
