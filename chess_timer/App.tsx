@@ -8,7 +8,7 @@ import { Foundation } from '@expo/vector-icons';
 
 export default function App() {
 
-  const time = 300; 
+  const time = 600; 
 
   const [seconds1, setSeconds1] = useState(time);
   const [running1, setRunning1] = useState(false);
@@ -153,16 +153,20 @@ useEffect(() => {
         if (clicked1) {
           setRunning1(true);
           setPaused1(false)
+          setPaused2(true)
+          setPaused2(false)
           setPlay(true);
         } else if (clicked2) {
           setRunning2(true);
           setPaused2(false)
+          setPaused1(true)
+          setPaused1(false)
           setPlay(true);
         }
       }
     }
   };
-  
+
   // Reset timer to initial seconds 
   const reset_timer = () => {
 
@@ -270,7 +274,7 @@ useEffect(() => {
       <TouchableOpacity 
       style={styles.button_style1} 
       onPress={() => {
-        if (!running2 && !paused1) { // Verify if button02 is not in execution
+        if (running2==false && paused1==false) { // Verify if button02 is not in execution
           start_timer1();
         }
       }}
@@ -307,7 +311,7 @@ useEffect(() => {
       <TouchableOpacity 
       style={styles.button_style2} 
       onPress={() => {
-        if (!running1 && !paused2) { // Verify if button01 is not in execution
+        if (running1==false && paused2==false) { // Verify if button01 is not in execution
           start_timer2();
         }
       }}
