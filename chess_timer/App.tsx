@@ -8,185 +8,133 @@ import { Foundation } from '@expo/vector-icons';
 
 export default function App() {
 
+  // Timer minutes in seconds 
   const time = 600; 
 
-  const [seconds1, setSeconds1] = useState(time);
-  const [running1, setRunning1] = useState(false);
-
-  const [seconds2, setSeconds2] = useState(time);
-  const [running2, setRunning2] = useState(false);
-
-  const [background_color1, setBackgroundColor1] = useState("gray");
-  const [background_color2, setBackgroundColor2] = useState("gray");
-
-  const [clicked1, setClicked1] = useState(false);
-  const [clicked2, setClicked2] = useState(false);
-
-  const [paused1, setPaused1] = useState(false);
-  const [paused2, setPaused2] = useState(false);
-
-  const [moves1, setMoves1] = useState(0);
-  const [moves2, setMoves2] = useState(0);
-
+  // This is for the play/pause button icon 
   const[play, setPlay] = useState(true)
 
-  // Function to play sound 
-  const playSound = async () => {
-    const soundObject = new Audio.Sound();
-    try {
-      await soundObject.loadAsync(require('./assets/touch.mp3'));
-      await soundObject.playAsync();
-    } catch (error) {
-      console.error('Erro ao carregar o áudio:', error);
-    }
-  };
-  
-  // Increment 1 every time someone do a move 
-  const add_move = (state, setState) => {
-    setState(state + 1);
-  };
+  // Create a timer constructor  
+  const create_timer = (id, color) => ({
+    seconds: time,
+    running: false,
+    background_color: "gray",
+    changed_color: color, 
+    clicked: false,
+    paused: false,
+    moves: 0,
+    id: id,
+  });
 
-  // Clear the moves 
-  const clear_moves = () => {
-    setMoves1(0)
-    setMoves2(0)
-  }
+  // Create 2 objects timer 
+  const timer1 = create_timer(1, "darkturquoise");
+  const timer2 = create_timer(2, "tomato");
 
   // Start timer iteration [1] 
-  const start_timer1 = () => {
+  const start_timer = (t1, t2) => {
 
-      if (running1) {
-        start_timer2()
-        setClicked2(true)
-        stop_timer1()
-        setClicked1(false)
+    const timer1 = t1
+    const timer2 = t2
+
+      if (timer1.running) {
+        start_timer(t2, t1)
+        timer2.clicked = true
+        stop_timer(timer1)
+        timer1.clicked = false
 
       } else {
         playSound()
-        setBackgroundColor1("darkturquoise")
-        setRunning1(true)
-        setClicked1(true)
-        add_move(moves1, setMoves1)
+        timer1.background_color = timer1.changed_color
+        timer1.running = true
+        timer1.clicked = true 
+        add_move(timer1)
+        
       }
   }
 
-  // Stop timer iteration [1] 
-  const stop_timer1 = () => {
-    setBackgroundColor1("gray")
-    setRunning1(false)
+  // Stop timer iteration
+  const stop_timer = (timer) => {
+    timer.background_color = 'gray'
+    timer.running = false 
   }
-
+ 
   // Update timer every time 1 second elapses [1] 
   useEffect(() => {  
 
         let intervalId;
 
-        if (running1 && seconds1 > 0) {
+        if (timer1.running && timer1.seconds > 0) {
             intervalId = setInterval(() => {
-                setSeconds1(prevSeconds => prevSeconds - 1);
+                timer1.seconds = timer1.seconds - 1;
             }, 1000);
-        } else if (seconds1 === 0) {
-            setRunning1(false);
-            setBackgroundColor1("gray");
-            //setSeconds1(300);
+        } else if (timer1.seconds === 0) {
+            stop_timer(timer1)
         }
         return () => {
             clearInterval(intervalId);
         };
     
-}, [running1, seconds1]); // Every time this changes
+}, [timer1.running, timer1.seconds]); // Every time this changes
 
-// Start timer iteration [2] 
-const start_timer2 = () => {
+  // Update timer every time 1 second elapses [2] 
+  useEffect(() => {  
 
-    if (running2){
-      start_timer1()
-      setClicked1(true)
-      stop_timer2()
-      setClicked2(false)
+    let intervalId;
 
-    } else {
-      playSound()
-      setBackgroundColor2("tomato")
-      setRunning2(true)
-      setClicked2(true)
-      add_move(moves2, setMoves2)
+    if (timer2.running && timer2.seconds > 0) {
+        intervalId = setInterval(() => {
+            timer2.seconds = timer2.seconds - 1;
+        }, 1000);
+    } else if (timer2.seconds === 0) {
+        stop_timer(timer2)
     }
-}
+    return () => {
+        clearInterval(intervalId);
+    };
 
-// Stop timer iteration [2] 
-const stop_timer2 = () => {
-  setBackgroundColor2("gray")
-  setRunning2(false)
-}
+}, [timer2.running, timer2.seconds]); // Every time this changes
 
-// Update timer every time 1 second elapses [2] 
-useEffect(() => {  
+  const pause_timers = () => {
+    timer1.paused = true 
+    timer2.paused = true 
+  }
 
-      let intervalId;
-
-      if (running2 && seconds2 > 0) {
-          intervalId = setInterval(() => {
-              setSeconds2(prevSeconds => prevSeconds - 1);
-          }, 1000);
-      } else if (seconds2 === 0) {
-          setRunning2(false);
-          setBackgroundColor2("gray");
-          //setSeconds2(300);
-      }
-      return () => {
-          clearInterval(intervalId);
-      };
-  
-}, [running2, seconds2]); // Every time this changes
+  const unpause_timers = () => {
+    timer1.paused = false 
+    timer2.paused = false
+  }
 
   // Change play/pause button icon and pause the 2 timers  
   const pause_play = () => {
-    if (running1 || running2) {
-      setRunning1(false);
-      setRunning2(false);
-      setPaused1(true)
-      setPaused2(true)
+    if (timer1.running || timer2.running) {
+      pause_timers()
+      timer1.running = false 
+      timer2.running = false  
       setPlay(false);
     } else {
-      if (!running1 && !running2) {
-        if (clicked1) {
-          setRunning1(true);
-          setPaused1(false)
-          setPaused2(true)
-          setPaused2(false)
-          setPlay(true);
-        } else if (clicked2) {
-          setRunning2(true);
-          setPaused2(false)
-          setPaused1(true)
-          setPaused1(false)
-          setPlay(true);
+      if (!timer1.running && !timer2.running) {
+        if (timer1.clicked) {
+          timer1.running = true
+          unpause_timers()
+          setPlay(true)
+        } else if (timer2.clicked) {
+          timer2.running = true
+          unpause_timers()
+          setPlay(true)
         }
       }
     }
   };
 
   // Reset timer to initial seconds 
-  const reset_timer = () => {
-
-    setBackgroundColor1("gray");
-    setSeconds1(time);
-    setRunning1(false);
-    setClicked1(false)
-
-    setBackgroundColor2("gray");
-    setSeconds2(time);
-    setRunning2(false);
-    setClicked2(false)
-
-    setPaused1(false)
-    setPaused2(false)
-
-    clear_moves()
-
-    setPlay(true)
-
+  const reset_timer = (timer) => {
+    timer.background_color = 'gray'
+    timer.seconds = time 
+    timer.running = false 
+    timer.clicked = false  
+    timer.paused = false
+    clear_moves(timer)
+    setPlay(true) 
   }
   
   // Format seconds to minutes and 00:00 format 
@@ -196,7 +144,28 @@ useEffect(() => {
     return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   };
 
-  // ALL STYLES
+  // Function to play sound 
+  const playSound = async () => {
+    const soundObject = new Audio.Sound();
+    try {
+      await soundObject.loadAsync(require('./assets/touch.mp3'));
+      await soundObject.playAsync();
+    } catch (error) {
+      console.error("Error: Can't load the audio. ", error);
+    }
+  };
+  
+  // Increment 1 every time someones round 
+  const add_move = (timer) => {
+    timer.moves = timer.moves + 1 
+  };
+
+  // Clear the moves 
+  const clear_moves = (timer1) => {
+    timer1.moves = 0 
+  }
+
+  // ALL STYLES *
   const styles = StyleSheet.create({
 
     main: {
@@ -222,7 +191,7 @@ useEffect(() => {
       justifyContent: "space-around",
       alignItems: 'center',
       padding: 10,
-      backgroundColor: background_color1,
+      backgroundColor: timer1.background_color,
     },
 
     button_style2: {
@@ -232,7 +201,7 @@ useEffect(() => {
       justifyContent: "space-around",
       alignItems: 'center',
       padding: 10,
-      backgroundColor: background_color2,
+      backgroundColor: timer2.background_color,
     },
   
     text_style: {
@@ -264,23 +233,21 @@ useEffect(() => {
   
   return (
 
-    //MAIN VIEW
+    // MAIN VIEW * 
     <View style={styles.main}>
     <StatusBar style="light" />
-
-      
 
       {/*timer button 01*/}
       <TouchableOpacity 
       style={styles.button_style1} 
       onPress={() => {
-        if (running2==false && paused1==false) { // Verify if button02 is not in execution
-          start_timer1();
+        if (timer2.running==false && timer1.paused==false) { // Verify if button02 is not in execution
+          start_timer(timer1, timer2);
         }
       }}
       >
-        <Text style={styles.undertext_hd}>Moves: {moves1}</Text>
-        <Text style={styles.heads_down}>{format_timer(seconds1)}</Text>
+        <Text style={styles.undertext_hd}>Move: {timer1.moves}</Text>
+        <Text style={styles.heads_down}>{format_timer(timer1.seconds)}</Text>
       </TouchableOpacity>
 
 
@@ -311,13 +278,13 @@ useEffect(() => {
       <TouchableOpacity 
       style={styles.button_style2} 
       onPress={() => {
-        if (running1==false && paused2==false) { // Verify if button01 is not in execution
-          start_timer2();
+        if (timer1.running==false && timer2.paused==false) { // Verify if button01 is not in execution
+          start_timer(timer2, timer1);
         }
       }}
       >
-        <Text style={styles.text_style}>{format_timer(seconds2)}</Text>
-        <Text style={styles.undertext}>Moves: {moves2}</Text>
+        <Text style={styles.text_style}>{format_timer(timer2.seconds)}</Text>
+        <Text style={styles.undertext}>Move: {timer2.moves}</Text>
       </TouchableOpacity>
       
     </View>
