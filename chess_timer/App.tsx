@@ -12,22 +12,17 @@ export default function App() {
 
   const [seconds1, setSeconds1] = useState(time);
   const [running1, setRunning1] = useState(false);
+  const [background_color1, setBackgroundColor1] = useState("gray");
+  const [clicked1, setClicked1] = useState(false);
+  const [paused1, setPaused1] = useState(false);
+  const [moves1, setMoves1] = useState(0);
 
   const [seconds2, setSeconds2] = useState(time);
   const [running2, setRunning2] = useState(false);
-
-  const [background_color1, setBackgroundColor1] = useState("gray");
   const [background_color2, setBackgroundColor2] = useState("gray");
-
-  const [clicked1, setClicked1] = useState(false);
   const [clicked2, setClicked2] = useState(false);
-
-  const [paused1, setPaused1] = useState(false);
   const [paused2, setPaused2] = useState(false);
-
-  const [moves1, setMoves1] = useState(0);
   const [moves2, setMoves2] = useState(0);
-
   const[play, setPlay] = useState(true)
 
   // Function to play sound 
@@ -153,13 +148,11 @@ useEffect(() => {
         if (clicked1) {
           setRunning1(true);
           setPaused1(false)
-          setPaused2(true)
           setPaused2(false)
           setPlay(true);
         } else if (clicked2) {
           setRunning2(true);
           setPaused2(false)
-          setPaused1(true)
           setPaused1(false)
           setPlay(true);
         }
